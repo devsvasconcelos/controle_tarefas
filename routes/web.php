@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\TarefaController;
+use App\Mail\MensagemTesteMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,11 +21,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('tarefa', TarefaController::class)->middleware('auth'); // ao invés de implamentamos no controlador o middleware podemos fazê-lo diretamente pela a rota 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
+->name('home')
+->middleware('verified');
 
+Route::resource('tarefa', TarefaController::class)->middleware('verified'); // ao invés de implamentamos no controlador o middleware podemos fazê-lo diretamente pela a rota 
+
+Route::get('/mensagem-teste', function(){
+   // return new MensagemTesteMail();
+   Mail::to('di0g0v4sc0ncel0s@gmail.com')->send(new MensagemTesteMail());
+   return "email enviado com sucesso";
+});
 
 
 
