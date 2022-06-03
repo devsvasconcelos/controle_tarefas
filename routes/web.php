@@ -27,7 +27,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
 ->name('home')
 ->middleware('verified');
 
-Route::resource('tarefa', TarefaController::class)->middleware('verified'); // ao invés de implamentamos no controlador o middleware podemos fazê-lo diretamente pela a rota 
+Route::resource('tarefa', TarefaController::class)->middleware(['verified', 'auth']); // ao invés de implamentamos no controlador o middleware podemos fazê-lo diretamente pela a rota 
 
 Route::get('/mensagem-teste', function(){
    // return new MensagemTesteMail();
