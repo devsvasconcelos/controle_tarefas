@@ -43,6 +43,13 @@ class TarefaController extends Controller
         //     echo "Voce não está logado no sistema";
         // }
 
+        $user_id = auth()->user()->id;
+       // $tarefas = Tarefa::where('user_id', $user_id)->get(); // get() retorna um array
+       $tarefas = Tarefa::where('user_id', $user_id)->paginate(10);
+
+
+        return view('tarefa.index',['tarefas' => $tarefas]);
+
     }
 
     /**
@@ -77,7 +84,10 @@ class TarefaController extends Controller
 
         // $request->validator($regras,$feedback);
 
-        $tarefa = Tarefa::create($request->all());
+        $dados = $request->all('tarefa', 'data_limite_conclusao'); // ao colocar entre os paretes podemos especificar os atribitos a serem recuperadosb
+        $dados['user_id'] = auth()->user()->id;
+
+        $tarefa = Tarefa::create($dados);
         
         $destinatario = auth()->user()->email;
 
@@ -96,6 +106,9 @@ class TarefaController extends Controller
     public function show(Tarefa $tarefa)
     {
         //
+
+
+
         return view('tarefa.show', ['tarefa' => $tarefa]);
     }
 
@@ -108,6 +121,16 @@ class TarefaController extends Controller
     public function edit(Tarefa $tarefa)
     {
         //
+        $user_id = Auth::user()->id;
+
+        
+
+        if ($tarefa->user_id == $user_id ) {
+
+            return view('tarefa.edit', ['tarefa' => $tarefa]);
+            
+        }
+        return view('acesso-negado');
     }
 
     /**
@@ -120,6 +143,14 @@ class TarefaController extends Controller
     public function update(Request $request, Tarefa $tarefa)
     {
         //
+
+
+        if ( !$tarefa->user_id == Auth::user()->id ) {
+            return view('acesso-negado');
+        }
+        
+        $tarefa->update($request->all());
+        return redirect()->route('tarefa.show', ['tarefa' => $tarefa->id]);
     }
 
     /**
