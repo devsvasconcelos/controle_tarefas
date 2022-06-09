@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TarefasExport;
 use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TarefaController extends Controller
 {
     //ao invés de implamentamos na rota o middleware podemos fazê-lo pela o controlador
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
+    public function __construct()
+    {
+        $this->middleware('auth');
     
-    // }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -162,5 +164,23 @@ class TarefaController extends Controller
     public function destroy(Tarefa $tarefa)
     {
         //
+        if ( !$tarefa->user_id == Auth::user()->id ) {
+            return view('acesso-negado');
+        }
+
+        $tarefa->delete();
+        return redirect()->route('tarefa.index', ['tarefa' => $tarefa->id]);
+
     }
+
+    public function exportacao($extensao){
+
+
+        if (in_array($extensao, ['xlsx','csv','pdf'])) {
+            return Excel::download(new TarefasExport, 'lista_tarefas.'.$extensao);            
+        }
+
+        return redirect()->route('tarefa.index');
+    }
+    
 }

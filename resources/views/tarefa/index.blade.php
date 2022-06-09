@@ -5,7 +5,13 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Tarefas</div>
+                <div class="card-header">
+                    Tarefas 
+                    <a href="{{route('tarefa.create')}}" class="float-right">Novo</a>
+                    <a href="{{route('tarefa.exportacao', ['extensao' => 'xlsx'])}}" class="float-right">XLSX</a>
+                    <a href="{{route('tarefa.exportacao', ['extensao' => 'csv'])}}" class="float-right">CSV</a>
+                    <a href="{{route('tarefa.exportacao', ['extensao' => 'pdf'])}}" class="float-right">PDF</a>
+                </div>
 
                 <div class="card-body">
                     <table class="table">
@@ -14,6 +20,7 @@
                                 <th scope="col">ID</th>
                                 <th scope="col">Tarefa</th>
                                 <th scope="col">Data Limite Conclusão</th>
+                                <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -24,6 +31,14 @@
                                 <td>{{$t['tarefa']}}</td>
                                 <td>{{ date('d/m/y', strtotime($t['data_limite_conclusao']))}}</td>
                                 <td><a href="{{ route('tarefa.edit', $t['id']) }}" >Edit</a></td>
+                                <td>
+                                    <form id="form_{{$t['id']}}" action="{{ route('tarefa.destroy', ['tarefa' => $t['id'] ]) }}" method="post" >
+                                        @method('DELETE')
+                                        @csrf
+                                    <a href="#" onclick="document.getElementById('form_{{$t['id']}}').submit()" >Excluir</a>
+                                </form>
+
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
