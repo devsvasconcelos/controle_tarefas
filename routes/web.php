@@ -25,6 +25,8 @@ Auth::routes(['verify' => true]);
 
 Route::get('tarefa/exportacao/{extensao}', [TarefaController::class, 'exportacao'])->name('tarefa.exportacao');
 
+Route::get('tarefa/exportar', [TarefaController::class, 'exportar'])->name('tarefa.exportar');
+
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
 
 Route::resource('tarefa', TarefaController::class)->middleware(['verified', 'auth']); // ao invés de implamentamos no controlador o middleware podemos fazê-lo diretamente pela a rota 
